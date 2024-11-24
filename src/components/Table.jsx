@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
 import AddNote from "./AddNote";
+import UpdateNote from "./UpdateNote";
 
 const Table = () => {
     const [title, setTitle] = useState("");
     const [addNote, setAddNote] = useState(false);
+    const [updateNote, setUpdateNote] = useState(false);
 
     return (
         <div className="container mx-auto py-6 min-h-screen">
@@ -46,7 +48,9 @@ const Table = () => {
                                 <td className="border border-gray-400 px-4 py-2">-</td>
                                 <td className="border border-gray-400 px-4 py-2">-</td>
                                 <td className="border border-gray-400 px-4 py-2 flex justify-center gap-2">
-                                    <button className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">
+                                    <button className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
+                                        onClick={() => setUpdateNote(true)}
+                                    >
                                         <FaRegEdit />
                                     </button>
                                     <button className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
@@ -60,6 +64,10 @@ const Table = () => {
 
                 {
                     addNote && <AddNote setAddNote={setAddNote} />
+                }
+
+                {
+                    updateNote && <UpdateNote setUpdateNote={setUpdateNote} />
                 }
             </div>
         </div>

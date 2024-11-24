@@ -1,7 +1,7 @@
 import React from 'react'
 import { IoMdCloseCircle } from "react-icons/io";
 
-const AddNote = ({ setAddNote }) => {
+const UpdateNote = ({ setUpdateNote }) => {
     return (
         <div className=" h-[50vh] flex justify-center items-center">
             <div className="w-3/4 rounded-md bg-gray-300 absolute top-30 mx-auto">
@@ -9,14 +9,14 @@ const AddNote = ({ setAddNote }) => {
                 <div className="flex justify-end p-4 text-red-600 ">
                     <span
                         className="cursor-pointer"
-                        onClick={() => setAddNote(false)}
+                        onClick={() => setUpdateNote(false)}
                     >
                         <IoMdCloseCircle size={23} />
                     </span>
                 </div>
                 <div className="px-10 pb-10">
                     <form className=" flex flex-col gap-5">
-                        <h1 className="text-center">Add Note</h1>
+                        <h1 className="text-center">Update Note</h1>
                         <input type="text" placeholder="Title"
                             className="outline-none py-2 px-4 rounded-md"
                         />
@@ -26,7 +26,7 @@ const AddNote = ({ setAddNote }) => {
                         <button
                             type='submit'
                             className="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                            Add Note
+                            Update Note
                         </button>
                     </form>
                 </div>
@@ -35,4 +35,6 @@ const AddNote = ({ setAddNote }) => {
     )
 }
 
-export default AddNote
+
+
+export default UpdateNote
