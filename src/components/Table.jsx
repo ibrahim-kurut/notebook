@@ -11,6 +11,9 @@ const Table = () => {
     const [addNote, setAddNote] = useState(false);
     const [updateNote, setUpdateNote] = useState(false);
 
+    const [currentNote, setCurrentNote] = useState(null);
+
+
 
     // handel delete item
     const handleDelete = (id) => {
@@ -34,21 +37,14 @@ const Table = () => {
                     swal("Your imaginary file is safe!");
                 }
             });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
+
+    // handel edit item
+    const handleEdit = (note) => {
+        setCurrentNote(note);
+        setUpdateNote(true);
+    };
+
     return (
         <div className="container mx-auto py-6 min-h-screen">
             <div className="flex items-center justify-between mb-4">
@@ -89,7 +85,7 @@ const Table = () => {
                                 <td className="border border-gray-400 px-4 py-2">{item.create_at}</td>
                                 <td className="border border-gray-400 px-4 py-2 flex justify-center gap-2">
                                     <button className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
-                                        onClick={() => setUpdateNote(true)}
+                                        onClick={() => handleEdit(item)}
                                     >
                                         <FaRegEdit />
                                     </button>
@@ -109,9 +105,8 @@ const Table = () => {
                     addNote && <AddNote setAddNote={setAddNote} />
                 }
 
-                {
-                    updateNote && <UpdateNote setUpdateNote={setUpdateNote} />
-                }
+                {updateNote && <UpdateNote setUpdateNote={setUpdateNote} currentNote={currentNote} />}
+
             </div>
         </div>
     );
