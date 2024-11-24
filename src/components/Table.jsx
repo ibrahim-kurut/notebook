@@ -4,11 +4,51 @@ import { FaRegEdit } from "react-icons/fa";
 import AddNote from "./AddNote";
 import UpdateNote from "./UpdateNote";
 
+import data from '../data'
+import swal from "sweetalert";
 const Table = () => {
     const [title, setTitle] = useState("");
     const [addNote, setAddNote] = useState(false);
     const [updateNote, setUpdateNote] = useState(false);
 
+
+    // handel delete item
+    const handleDelete = (id) => {
+
+
+
+
+        swal({
+            title: "Are you sure?",
+            text: `you want to delete this note? ${id} `,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Poof! Your imaginary file has been deleted!", {
+                        icon: "success",
+                    });
+                } else {
+                    swal("Your imaginary file is safe!");
+                }
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
     return (
         <div className="container mx-auto py-6 min-h-screen">
             <div className="flex items-center justify-between mb-4">
@@ -42,18 +82,21 @@ const Table = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {[...Array(3)].map((_, index) => (
+                        {data.map((item, index) => (
                             <tr key={index} className="text-center">
-                                <td className="border border-gray-400 px-4 py-2">-</td>
-                                <td className="border border-gray-400 px-4 py-2">-</td>
-                                <td className="border border-gray-400 px-4 py-2">-</td>
+                                <td className="border border-gray-400 px-4 py-2">{item.title}</td>
+                                <td className="border border-gray-400 px-4 py-2">{item.content}</td>
+                                <td className="border border-gray-400 px-4 py-2">{item.create_at}</td>
                                 <td className="border border-gray-400 px-4 py-2 flex justify-center gap-2">
                                     <button className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
                                         onClick={() => setUpdateNote(true)}
                                     >
                                         <FaRegEdit />
                                     </button>
-                                    <button className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
+                                    <button
+                                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                                        onClick={() => handleDelete(item.id)}
+                                    >
                                         <RiDeleteBin6Line />
                                     </button>
                                 </td>
