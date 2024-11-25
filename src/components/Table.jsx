@@ -7,7 +7,8 @@ import UpdateNote from "./UpdateNote";
 import data from '../data'
 import swal from "sweetalert";
 const Table = () => {
-    const [title, setTitle] = useState("");
+    const [searchItem, setSearchItem] = useState(""); // Girilen metnin saklanma durumu
+    const [filteredNotes, setFilteredNotes] = useState(data); // Görüntülenen öğelerin durumu
     const [addNote, setAddNote] = useState(false);
     const [updateNote, setUpdateNote] = useState(false);
 
@@ -23,7 +24,7 @@ const Table = () => {
 
         swal({
             title: "Are you sure?",
-            text: `you want to delete this note? ${id} `,
+            text: `Do you want to delete this note? ${id}`,
             icon: "warning",
             buttons: true,
             dangerMode: true,
@@ -33,16 +34,33 @@ const Table = () => {
                     swal("Poof! Your imaginary file has been deleted!", {
                         icon: "success",
                     });
+                    setFilteredNotes((prevNotes) =>
+                        prevNotes.filter((note) => note.id !== id)
+                    );
                 } else {
                     swal("Your imaginary file is safe!");
                 }
             });
-    }
+    };
 
     // handel edit item
     const handleEdit = (note) => {
         setCurrentNote(note);
         setUpdateNote(true);
+    };
+
+    // handel search item
+    const handleSearch = () => {
+
+        const result = data.filter((note) =>
+            note.title.toLowerCase().includes(searchItem.toLowerCase())
+        );
+        setFilteredNotes(result); // Görüntüleme listesini güncelle
+
+        if (result.length === 0) {
+            console.log("data bulunanadi");
+        }
+
     };
 
     return (
@@ -56,19 +74,21 @@ const Table = () => {
                 </button>
                 <input
                     type="text"
-                    placeholder="please enter title"
+                    placeholder="Please enter title"
                     className="flex flex-1 ml-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    value={searchItem}
+                    onChange={(e) => setSearchItem(e.target.value)}
                 />
-                <button className="ml-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                <button
+                    className="ml-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    onClick={handleSearch}
+                >
                     Search
                 </button>
             </div>
 
-
             <div className="overflow-x-auto">
-                <table className=" w-full bg-gray-200 border-collapse border border-gray-300 ">
+                <table className="w-full bg-gray-200 border-collapse border border-gray-300">
                     <thead>
                         <tr className="bg-gray-300">
                             <th className="font-normal border border-gray-400 px-4 py-2 w-[150px]">Title</th>
@@ -78,26 +98,37 @@ const Table = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((item, index) => (
-                            <tr key={index} className="text-center">
-                                <td className="border border-gray-400 px-4 py-2">{item.title}</td>
-                                <td className="border border-gray-400 px-4 py-2">{item.content}</td>
-                                <td className="border border-gray-400 px-4 py-2">{item.create_at}</td>
-                                <td className="border border-gray-400 px-4 py-2 flex justify-center gap-2">
-                                    <button className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
-                                        onClick={() => handleEdit(item)}
-                                    >
-                                        <FaRegEdit />
-                                    </button>
-                                    <button
-                                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                                        onClick={() => handleDelete(item.id)}
-                                    >
-                                        <RiDeleteBin6Line />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                        {
+                            filteredNotes.length === 0 ?
+                                (
+                                    <p className="text-center text-lg text-red-600 capitalize">
+                                        Data not found
+                                    </p>
+                                )
+                                :
+                                (
+                                    filteredNotes.map((item, index) => (
+                                        <tr key={index} className="text-center">
+                                            <td className="border border-gray-400 px-4 py-2">{item.title}</td>
+                                            <td className="border border-gray-400 px-4 py-2">{item.content}</td>
+                                            <td className="border border-gray-400 px-4 py-2">{item.create_at}</td>
+                                            <td className="border border-gray-400 px-4 py-2 flex justify-center gap-2">
+                                                <button className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
+                                                    onClick={() => handleEdit(item)}
+                                                >
+                                                    <FaRegEdit />
+                                                </button>
+                                                <button
+                                                    className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                                                    onClick={() => handleDelete(item.id)}
+                                                >
+                                                    <RiDeleteBin6Line />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )
+                        }
                     </tbody>
                 </table>
 
@@ -114,3 +145,6 @@ const Table = () => {
 
 
 export default Table
+
+// butun data`yi (filteredNotes) verdik ve map ile donguye soktuk
+// eger handelSearch faction calisirsa (setFilteredNotes) guncelleriz ve sadece aranan data bize doner
