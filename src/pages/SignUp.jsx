@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
     const [firstName, setFirstName] = useState("");
@@ -12,15 +13,43 @@ const SignUp = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        // Reset errors at the start
+        setError("");
+
+        // Validate required fields
+        if (firstName.trim() === "") return setError("First name is required");
+        if (firstName.length <= 2) return setError("The first name should not be less than 2 letters");
+        if (lastName.trim() === "") return setError("Last name is required");
+        if (email.trim() === "") return setError("Email is required");
+
+        // Validate email format (simple regex)
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) return setError("Invalid email format");
+
         // Check the password matching
         if (password !== rePassword) {
             setError("Passwords do not match!");
             return;
         }
 
-        //! TODO add validation
-        console.log("Signing up with:", firstName, lastName, email, password);
-        setError(""); // Reset errors when sending the form successfully
+        // Validate password strength
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        if (!passwordPattern.test(password)) {
+            setError("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.");
+            return;
+        }
+
+        const formData = {
+            firstName,
+            lastName,
+            email,
+            password,
+        };
+
+        // Send the data to the server
+        console.log("Signing up with:", formData);
+        toast.success("Registration successful");
+
     };
 
     return (
@@ -38,7 +67,6 @@ const SignUp = () => {
                             placeholder="Enter your first name"
                             value={firstName}
                             onChange={(e) => setFirstName(e.target.value)}
-                            required
                             autoComplete="given-name"
                         />
                     </div>
@@ -52,7 +80,6 @@ const SignUp = () => {
                             placeholder="Enter your last name"
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
-                            required
                             autoComplete="family-name"
                         />
                     </div>
@@ -66,7 +93,6 @@ const SignUp = () => {
                             placeholder="Enter your email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            required
                             autoComplete="email"
                         />
                     </div>
@@ -80,7 +106,6 @@ const SignUp = () => {
                             placeholder="Enter your password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            required
                             autoComplete="new-password"
                         />
                     </div>
@@ -94,7 +119,6 @@ const SignUp = () => {
                             placeholder="Confirm your password"
                             value={rePassword}
                             onChange={(e) => setRePassword(e.target.value)}
-                            required
                             autoComplete="new-password"
                         />
                     </div>
