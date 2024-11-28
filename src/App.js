@@ -9,9 +9,12 @@ import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import SignUp from './pages/SignUp';
 
+import { Provider } from 'react-redux';
+import store from './redux/store';
+
 function App() {
   return (
-    <div>
+    <Provider store={store}>
       <ToastContainer position="top-right" theme="colored" />
       <Header />
       <Routes>
@@ -21,7 +24,7 @@ function App() {
         <Route path="/table" element={<Table />} />
       </Routes>
 
-    </div>
+    </Provider>
   );
 }
 

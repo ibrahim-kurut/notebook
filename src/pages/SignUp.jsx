@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { register } from '../redux/Slices/userSlice';
 const SignUp = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -9,6 +11,11 @@ const SignUp = () => {
     const [password, setPassword] = useState("");
     const [rePassword, setRePassword] = useState("");
     const [error, setError] = useState("");
+
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { status } = useSelector((state) => state.user);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -40,16 +47,23 @@ const SignUp = () => {
         }
 
         const formData = {
-            firstName,
-            lastName,
-            email,
-            password,
+            first_name: firstName,
+            last_name: lastName,
+            email: email,
+            password: password,
+            re_password: rePassword
         };
 
         // Send the data to the server
-        console.log("Signing up with:", formData);
-        toast.success("Registration successful");
-
+        dispatch(register(formData))
+            .unwrap()
+            .then(() => {
+                toast.success("Registration successful");
+                navigate('/login');
+            })
+            .catch((error) => {
+                toast.error(error.message);
+            });
     };
 
     return (
@@ -127,7 +141,9 @@ const SignUp = () => {
                         type="submit"
                         className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        Sign Up
+                        {
+                            status ? "loading ...." : "Sign Up"
+                        }
                     </button>
 
                     <div className="mt-4 text-center">
