@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../redux/Slices/userSlice';
+import LoaderSpinner from "../components/LoaderSpinner";
 const SignUp = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -142,7 +143,8 @@ const SignUp = () => {
                         className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         {
-                            status ? "loading ...." : "Sign Up"
+                            //loading
+                            status ? <LoaderSpinner /> : "Sign Up"
                         }
                     </button>
 
