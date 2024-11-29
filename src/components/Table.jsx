@@ -1,20 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
 import AddNote from "./AddNote";
 import UpdateNote from "./UpdateNote";
 
-import data from '../data'
+// import data from '../data'
 import swal from "sweetalert";
-const Table = () => {
+
+
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserNotes } from "../redux/Slices/notesSlice";
+
+const Table = ({ userToken }) => {
+
+
+    const dispatch = useDispatch();
+    const { notes } = useSelector((state) => state.notes);
+
+
+
+
     const [searchItem, setSearchItem] = useState(""); // Girilen metnin saklanma durumu
-    const [filteredNotes, setFilteredNotes] = useState(data); // Görüntülenen öğelerin durumu
+    const [filteredNotes, setFilteredNotes] = useState(notes); // Görüntülenen öğelerin durumu
     const [addNote, setAddNote] = useState(false);
     const [updateNote, setUpdateNote] = useState(false);
 
     const [currentNote, setCurrentNote] = useState(null);
 
 
+    useEffect(() => {
+        dispatch(fetchUserNotes(userToken));
+    }, [dispatch, userToken]);
+
+    useEffect(() => {
+        setFilteredNotes(notes);
+    }, [notes]);
 
     // handel delete item
     const handleDelete = (id) => {
@@ -52,7 +72,7 @@ const Table = () => {
     // handel search item
     const handleSearch = () => {
 
-        const result = data.filter((note) =>
+        const result = notes.filter((note) =>
             note.title.toLowerCase().includes(searchItem.toLowerCase())
         );
         setFilteredNotes(result); // Görüntüleme listesini güncelle
@@ -107,26 +127,33 @@ const Table = () => {
                                 )
                                 :
                                 (
-                                    filteredNotes.map((item, index) => (
-                                        <tr key={index} className="text-center">
-                                            <td className="border border-gray-400 px-4 py-2">{item.title}</td>
-                                            <td className="border border-gray-400 px-4 py-2">{item.content}</td>
-                                            <td className="border border-gray-400 px-4 py-2">{item.create_at}</td>
-                                            <td className="border border-gray-400 px-4 py-2 flex justify-center gap-2">
-                                                <button className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
-                                                    onClick={() => handleEdit(item)}
-                                                >
-                                                    <FaRegEdit />
-                                                </button>
-                                                <button
-                                                    className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                                                    onClick={() => handleDelete(item.id)}
-                                                >
-                                                    <RiDeleteBin6Line />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
+                                    filteredNotes.map((item, index) => {
+                                        const dateString = item?.created_at; // ISO şeklinde tarih
+                                        const date = new Date(dateString); // Diziyi bir tarih nesnesine dönüştürün
+                                        const formattedDate = date.toISOString().split('T')[0];
+                                        console.log(formattedDate);
+
+                                        return (
+                                            <tr key={index} className="text-center">
+                                                <td className="border border-gray-400 px-4 py-2">{item?.title}</td>
+                                                <td className="border border-gray-400 px-4 py-2">{item?.content}</td>
+                                                <td className="border border-gray-400 px-4 py-2">{formattedDate}</td>
+                                                <td className="border border-gray-400 px-4 py-2 flex justify-center gap-2">
+                                                    <button className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
+                                                        onClick={() => handleEdit(item)}
+                                                    >
+                                                        <FaRegEdit />
+                                                    </button>
+                                                    <button
+                                                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                                                        onClick={() => handleDelete(item.id)}
+                                                    >
+                                                        <RiDeleteBin6Line />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
                                 )
                         }
                     </tbody>

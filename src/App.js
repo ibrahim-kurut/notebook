@@ -22,6 +22,7 @@ function App() {
 
 function Main() {
   const { user } = useSelector((state) => state.user);
+  const userToken = user?.access
 
   return (
     <>
@@ -31,7 +32,7 @@ function Main() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/table" element={user && <Table />} />
+        <Route path="/table" element={user && <Table userToken={userToken} />} />
       </Routes>
     </>
   );
