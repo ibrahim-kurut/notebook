@@ -9,22 +9,31 @@ import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import SignUp from './pages/SignUp';
 
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import store from './redux/store';
 
 function App() {
   return (
     <Provider store={store}>
+      <Main />
+    </Provider>
+  );
+}
+
+function Main() {
+  const { user } = useSelector((state) => state.user);
+
+  return (
+    <>
       <ToastContainer position="top-right" theme="colored" />
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/table" element={<Table />} />
+        <Route path="/table" element={user && <Table />} />
       </Routes>
-
-    </Provider>
+    </>
   );
 }
 
