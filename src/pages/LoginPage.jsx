@@ -1,12 +1,38 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../redux/Slices/userSlice';
+import { toast } from "react-toastify";
+import LoaderSpinner from "../components/LoaderSpinner";
 const LoginPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { status } = useSelector((state) => state.user);
+    console.log(status);
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        const formDatad = { username, password }
+
+        if (username.trim() === '' || password.trim() === '') {
+            toast.error('Please fill in all fields');
+        } else {
+            dispatch(login(formDatad))
+                .unwrap()
+                .then(() => {
+                    toast.success("Login successful")
+                    navigate('/table')
+                })
+                .catch((error) => {
+                    toast.error(`Login failed: ${error}`);
+                });
+        }
 
         console.log("Logging in with:", username, password);
     };
@@ -48,7 +74,9 @@ const LoginPage = () => {
                         type="submit"
                         className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        Login
+                        {
+                            status === "loading" ? <LoaderSpinner /> : "login"
+                        }
                     </button>
 
                     <div className="mt-4 text-center">

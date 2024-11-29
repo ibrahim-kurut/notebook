@@ -144,7 +144,8 @@ const SignUp = () => {
                     >
                         {
                             //loading
-                            status ? <LoaderSpinner /> : "Sign Up"
+                            status === "loading" ? <LoaderSpinner /> : "Sign Up"
+
                         }
                     </button>
 
