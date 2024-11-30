@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { IoMdCloseCircle } from "react-icons/io";
+import { useDispatch } from 'react-redux';
+import { editNote } from "../redux/Slices/notesSlice";
 
-const UpdateNote = ({ setUpdateNote, currentNote }) => {
+const UpdateNote = ({ setUpdateNote, currentNote, userToken }) => {
     const [title, setTitle] = useState(currentNote?.title || "");
     const [content, setContent] = useState(currentNote?.content || "");
+
+    const dispatch = useDispatch();
+
 
     const handleUpdate = (e) => {
         e.preventDefault();
@@ -13,6 +18,14 @@ const UpdateNote = ({ setUpdateNote, currentNote }) => {
         //     content: content    
         // };
         const updatedNote = { ...currentNote, title, content };
+
+
+        dispatch(editNote({
+            formData: { title, content },
+            token: userToken,
+            id: currentNote.id,
+        }));
+
         console.log('Updated Note:', updatedNote);
         setUpdateNote(false);
     };

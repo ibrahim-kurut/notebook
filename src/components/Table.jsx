@@ -162,7 +162,7 @@ const Table = ({ userToken }) => {
                     addNote && <AddNote setAddNote={setAddNote} userToken={userToken} />
                 }
 
-                {updateNote && <UpdateNote setUpdateNote={setUpdateNote} currentNote={currentNote} />}
+                {updateNote && <UpdateNote setUpdateNote={setUpdateNote} currentNote={currentNote} userToken={userToken} />}
 
             </div>
         </div>

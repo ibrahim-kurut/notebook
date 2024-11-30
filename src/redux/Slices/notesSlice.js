@@ -36,6 +36,23 @@ export const createNote = createAsyncThunk("notes/createNote", async ({ formData
     }
 })
 
+// update a note
+export const editNote = createAsyncThunk("notes/editNote", async ({ formData, token, id }, thunkAPI) => {
+    try {
+        const response = await axios.put(`http://127.0.0.1:8000/notebooks/api/note/${id}/`, formData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data; // Return data if the note is successfully updated
+    } catch (error) {
+        console.error("Error updating note:", error.response?.data || error.message);
+        return thunkAPI.rejectWithValue(error.response?.data || "Failed to update note");
+    }
+});
+
+
 // 2. definition of Slice to manage data status
 const notesSlice = createSlice({
     name: "notes",
@@ -72,6 +89,26 @@ const notesSlice = createSlice({
                 state.status = "failed";
                 state.error = action.payload;
             });
+
+        // update the notes
+        builder
+            .addCase(editNote.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(editNote.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                const updatedNote = action.payload;
+                // Update the note in the list of notes
+                const index = state.notes.findIndex(note => note.id === updatedNote.id);
+                if (index !== -1) {
+                    state.notes[index] = updatedNote;
+                }
+            })
+            .addCase(editNote.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            });
+
 
     },
 });
