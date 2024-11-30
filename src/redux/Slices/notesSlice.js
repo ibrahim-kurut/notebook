@@ -52,6 +52,25 @@ export const editNote = createAsyncThunk("notes/editNote", async ({ formData, to
     }
 });
 
+// delete a note
+export const deleteNote = createAsyncThunk("notes/deleteNote", async ({ token, id }, thunkAPI) => {
+    try {
+
+        console.log("delete note ");
+
+        const response = await axios.delete(`http://127.0.0.1:8000/notebooks/api/note/${id}/`, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Sending the user token with the request
+            },
+        }
+        );
+        return response.data; // Return data if the note is successfully deleted
+    } catch (error) {
+        console.error("Error deleting note:", error.response?.data || error.message);
+        return thunkAPI.rejectWithValue(error.response?.data || "Failed to delete note");
+    }
+});
+
 
 // 2. definition of Slice to manage data status
 const notesSlice = createSlice({
@@ -105,6 +124,20 @@ const notesSlice = createSlice({
                 }
             })
             .addCase(editNote.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            });
+
+        // delete the note
+        builder
+            .addCase(deleteNote.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(deleteNote.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.notes = state.notes.filter(note => note.id !== action.payload.id);
+            })
+            .addCase(deleteNote.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
             });

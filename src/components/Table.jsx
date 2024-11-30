@@ -3,7 +3,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
 import AddNote from "./AddNote";
 import UpdateNote from "./UpdateNote";
-
+import { deleteNote } from "../redux/Slices/notesSlice"
 // import data from '../data'
 import swal from "sweetalert";
 
@@ -37,30 +37,26 @@ const Table = ({ userToken }) => {
     }, [notes]);
 
     // handel delete item
-    const handleDelete = (id) => {
-
-
-
-
-        swal({
+    const handleDelete = async (id) => {
+        const willDelete = await swal({
             title: "Are you sure?",
             text: `Do you want to delete this note? ${id}`,
             icon: "warning",
             buttons: true,
             dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    swal("Poof! Your imaginary file has been deleted!", {
-                        icon: "success",
-                    });
-                    setFilteredNotes((prevNotes) =>
-                        prevNotes.filter((note) => note.id !== id)
-                    );
-                } else {
-                    swal("Your imaginary file is safe!");
-                }
+        });
+
+        if (willDelete) {
+            await dispatch(deleteNote({ id, token: userToken }));
+            swal("Poof! Your imaginary file has been deleted!", {
+                icon: "success",
             });
+            setFilteredNotes((prevNotes) =>
+                prevNotes.filter((note) => note.id !== id)
+            );
+        } else {
+            swal("Your imaginary file is safe!");
+        }
     };
 
     // handel edit item
