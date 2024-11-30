@@ -16,6 +16,7 @@ const Table = ({ userToken }) => {
 
     const dispatch = useDispatch();
     const { notes } = useSelector((state) => state.notes);
+    const { user } = useSelector((state) => state.user);
 
 
 
@@ -81,6 +82,9 @@ const Table = ({ userToken }) => {
 
     return (
         <div className="container mx-auto py-6 min-h-screen">
+            <p className="w-fit text-center bg-blue-500 text-white capitalize mb-6  text-lg p-2 rounded">
+                user : {user?.username}
+            </p>
             <div className="flex items-center justify-between mb-4">
                 <button
                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
