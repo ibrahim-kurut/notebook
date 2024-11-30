@@ -121,9 +121,15 @@ const Table = ({ userToken }) => {
                         {
                             filteredNotes.length === 0 ?
                                 (
-                                    <p className="text-center text-lg text-red-600 capitalize">
-                                        Data not found
-                                    </p>
+                                    <tr>
+                                        <td
+                                            className="text-center text-lg font-bold text-red-600 capitalize"
+                                            colSpan={4}
+                                        >
+                                            Data not found
+                                        </td>
+                                    </tr>
+
                                 )
                                 :
                                 (
