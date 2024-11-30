@@ -12,7 +12,6 @@ const LoginPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { status } = useSelector((state) => state.user);
-    console.log(status);
 
 
     const handleSubmit = (e) => {
@@ -33,8 +32,6 @@ const LoginPage = () => {
                     toast.error(`Login failed: ${error}`);
                 });
         }
-
-        console.log("Logging in with:", username, password);
     };
 
     return (
