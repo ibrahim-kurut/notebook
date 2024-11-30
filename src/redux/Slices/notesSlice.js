@@ -17,6 +17,25 @@ export const fetchUserNotes = createAsyncThunk("notes/fetchUserNotes",
     }
 );
 
+// create a new note
+export const createNote = createAsyncThunk("notes/createNote", async ({ formData, token }, thunkAPI) => {
+    try {
+        const response = await axios.post("http://127.0.0.1:8000/notebooks/api/note/", formData, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Sending the user token with the request
+            }
+        });
+        return response.data; // Returning data if the request is successful
+
+    } catch (error) {
+
+        console.error(error)
+
+        return thunkAPI.rejectWithValue(error.response.data)
+
+    }
+})
+
 // 2. definition of Slice to manage data status
 const notesSlice = createSlice({
     name: "notes",
@@ -39,6 +58,21 @@ const notesSlice = createSlice({
                 state.status = "failed";
                 state.error = action.payload;
             });
+
+        // create a new notes
+        builder
+            .addCase(createNote.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(createNote.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.notes.push(action.payload);
+            })
+            .addCase(createNote.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            });
+
     },
 });
 

@@ -131,7 +131,6 @@ const Table = ({ userToken }) => {
                                         const dateString = item?.created_at; // ISO şeklinde tarih
                                         const date = new Date(dateString); // Diziyi bir tarih nesnesine dönüştürün
                                         const formattedDate = date.toISOString().split('T')[0];
-                                        console.log(formattedDate);
 
                                         return (
                                             <tr key={index} className="text-center">
@@ -160,7 +159,7 @@ const Table = ({ userToken }) => {
                 </table>
 
                 {
-                    addNote && <AddNote setAddNote={setAddNote} />
+                    addNote && <AddNote setAddNote={setAddNote} userToken={userToken} />
                 }
 
                 {updateNote && <UpdateNote setUpdateNote={setUpdateNote} currentNote={currentNote} />}

@@ -2,26 +2,35 @@ import React, { useState } from 'react';
 import { IoMdCloseCircle } from "react-icons/io";
 import { toast } from 'react-toastify';
 
-const AddNote = ({ setAddNote }) => {
+import { useDispatch } from 'react-redux';
+import { createNote } from "../redux/Slices/notesSlice";
 
+const AddNote = ({ setAddNote, userToken }) => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
 
+    const dispatch = useDispatch();
+
     // handle add note
-    const handleAddNote = (e) => {
+    const handleAddNote = async (e) => {
         e.preventDefault();
 
         // validation
         if (title.trim() === "") return toast.error("title is required");
         if (content.trim() === "") return toast.error("content is required");
-        setTitle("");
-        setContent("");
-        const fd = ({ title, content })
 
+        const formData = { title, content };
 
-        toast.success("Note added successfully");
-        console.log(fd);
-        setAddNote(false);
+        try {
+            await dispatch(createNote({ formData, token: userToken })).unwrap();
+            toast.success("Note added successfully");
+            setTitle("");
+            setContent("");
+            setAddNote(false);
+        } catch (error) {
+            toast.error("Failed to add note");
+            console.error(error);
+        }
     };
 
     return (
